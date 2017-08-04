@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Organizer</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="category">Category</string>
+    <string name="categories">Categories</string>
+    <string name="no_categories">No Categories</string>
+    <string name="new_category">New Category</string>
+</resources>
