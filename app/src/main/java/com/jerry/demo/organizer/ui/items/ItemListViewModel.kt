@@ -7,6 +7,8 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
+import com.jerry.demo.organizer.database.item.Item
+import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.inject.Injector
 import javax.inject.Inject
 
@@ -15,16 +17,23 @@ class ItemListViewModel
 
     @Inject
     lateinit var categoryDao: CategoryDao
+    @Inject
+    lateinit var itemDao: ItemDao
 
     private val categoryId = MutableLiveData<Long>()
 
     var category: LiveData<Category>
+    var items: LiveData<List<Item>>
 
     init {
         Injector.get().inject(this)
 
         category = Transformations.switchMap(categoryId) {
             categoryDao.findCategoryById(it)
+        }
+
+        items = Transformations.switchMap(categoryId) {
+            itemDao.findItemsByCategoryId(it)
         }
     }
 

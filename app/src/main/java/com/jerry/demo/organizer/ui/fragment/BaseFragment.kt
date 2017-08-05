@@ -12,7 +12,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import com.jerry.demo.organizer.util.tintIcon
+import com.jerry.demo.organizer.util.tintAllIcons
 
 abstract class BaseFragment : Fragment(), LifecycleRegistryOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
@@ -45,11 +45,7 @@ abstract class BaseFragment : Fragment(), LifecycleRegistryOwner {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu?.let {
-            for (index in 0 until it.size()) {
-                it.getItem(index).tintIcon(android.R.color.white)
-            }
-        }
+        menu?.tintAllIcons(activity, android.R.color.white)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

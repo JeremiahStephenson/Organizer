@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.persistence.room.Room
 import com.jerry.demo.organizer.database.MainDatabase
 import com.jerry.demo.organizer.database.category.CategoryDao
+import com.jerry.demo.organizer.database.item.ItemDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -20,7 +21,13 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideNavigationDao(mainDatabase: MainDatabase): CategoryDao {
+    fun provideCategoryDao(mainDatabase: MainDatabase): CategoryDao {
         return mainDatabase.categoryDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideItemDao(mainDatabase: MainDatabase): ItemDao {
+        return mainDatabase.itemDao()
     }
 }

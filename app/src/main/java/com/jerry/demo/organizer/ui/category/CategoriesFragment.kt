@@ -15,7 +15,7 @@ import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.activity.GeneralActivity
 import com.jerry.demo.organizer.ui.fragment.BaseFragment
 import com.jerry.demo.organizer.ui.items.ItemListFragment
-import kotlinx.android.synthetic.main.fragment_categories.*
+import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class CategoriesFragment : BaseFragment() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.fragment_categories
+        return R.layout.fragment_items
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,8 +63,9 @@ class CategoriesFragment : BaseFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        emptyTextView.text = getString(R.string.no_categories)
         setupRecyclerView()
-        btnNewCategory.setOnClickListener {
+        btnNewItem.setOnClickListener {
             MaterialDialog.Builder(activity)
                     .title(R.string.new_category)
                     .inputType(InputType.TYPE_CLASS_TEXT)
@@ -83,9 +84,9 @@ class CategoriesFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        categoriesRecyclerView.layoutManager = LinearLayoutManager(activity)
-        categoriesRecyclerView.adapter = categoriesAdapter
-        categoriesRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        itemsRecyclerView.layoutManager = LinearLayoutManager(activity)
+        itemsRecyclerView.adapter = categoriesAdapter
+        itemsRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
     }
 
     private fun goToItemList(categoryId: Long) {

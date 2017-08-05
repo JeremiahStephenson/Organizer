@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.jerry.demo.organizer.ui.activity.MainActivity">
+    <item
+        android:id="@+id/menu_item_save"
+        android:title="@string/save"
+        android:icon="@drawable/ic_check_24dp"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_item_photo"
+        android:title="@string/photo"
+        android:icon="@drawable/ic_add_a_photo_24dp"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_item_delete"
+        android:title="@string/delete"
+        app:showAsAction="never" />
+</menu>

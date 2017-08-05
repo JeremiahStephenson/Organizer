@@ -6,4 +6,19 @@
     <string name="categories">Categories</string>
     <string name="no_categories">No Categories</string>
     <string name="new_category">New Category</string>
+
+    <string name="no_items">No Items</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+
+    <string name="save">Save</string>
+    <string name="photo">Photo</string>
+    <string name="delete">Delete</string>
+    <string name="new_item">New Item</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="folder">Folder</string>
+    <string name="tap_to_select">Tap to select</string>
+
+    <string name="title_required">Title is required</string>
+    <string name="description_required">Description is required</string>
 </resources>
