@@ -108,6 +108,10 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        checkIfDifferent()
+    }
+
     // called after the user has selected a photo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK) {
@@ -190,9 +194,12 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
                 name = titleEditText.text.toString()
                 description = descriptionTextView.text.toString()
                 imagePath = viewModel.imagePath ?: ""
-                id = intent.options { it.itemId } ?: 0L
-                categoryId = intent.options { it.categoryId } ?: 0L
+                categoryId = intent.options { it.categoryId ?: 0L }
                 timestamp = Calendar.getInstance().timeInMillis
+                item?.let {
+                    id = it.id
+                    rating = it.rating
+                }
             })
             finish()
         }

@@ -3,7 +3,6 @@ package com.jerry.demo.organizer.ui.items
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.devbrackets.android.recyclerext.adapter.viewholder.ClickableViewHolder
@@ -38,7 +37,6 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
             if (item != it.item) {
                 it.itemTextView.text = item.name
                 it.descriptionTextView.text = item.description
-                it.photoImageView.visibility = if (item.imagePath.isNullOrEmpty()) View.GONE else View.VISIBLE
                 it.ratingBar.rating = item.rating.toFloat()
                 Glide.with(it.photoImageView.context).load(data[position].imagePath).into(it.photoImageView)
             }
