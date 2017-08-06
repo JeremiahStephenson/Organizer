@@ -16,4 +16,30 @@ class Item {
     var description = ""
     var rating = 0
     var imagePath = ""
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Item) return false
+
+        if (id != other.id) return false
+        if (categoryId != other.categoryId) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (rating != other.rating) return false
+        if (imagePath != other.imagePath) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + categoryId.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + rating
+        result = 31 * result + imagePath.hashCode()
+        return result
+    }
+
+
 }

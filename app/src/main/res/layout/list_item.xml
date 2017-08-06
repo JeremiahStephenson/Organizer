@@ -12,52 +12,57 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <RelativeLayout
-            android:id="@+id/imageRelativeLayout"
+        <TextView
+            android:id="@+id/itemTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="28sp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textColor="@android:color/primary_text_light"
+            android:fontFamily="sans-serif"
+            android:layout_alignParentTop="true"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/descriptionTextView">
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Some Text For The Item" />
 
-            <ImageView
-                android:id="@+id/photoImageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="ContentDescription"/>
-
-            <TextView
-                android:id="@+id/itemTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:textSize="28sp"
-                android:lines="1"
-                android:ellipsize="end"
-                android:textColor="@android:color/primary_text_light"
-                android:fontFamily="sans-serif"
-                android:layout_alignParentTop="true"
-                tools:text="Some Text For The Item" />
-
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/photoImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/itemTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@+id/descriptionTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_margin="8dp"
             android:textSize="18sp"
             android:textColor="@android:color/primary_text_light"
             android:fontFamily="sans-serif"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageRelativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/photoImageView"
             tools:text="Some Text For The Description" />
+        
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:isIndicator="false"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionTextView"/>
 
     </android.support.constraint.ConstraintLayout>
 

@@ -14,16 +14,22 @@ import kotlinx.android.synthetic.main.list_item.view.*
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     var data: List<Item> = mutableListOf()
         set(value) {
+            //val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(ItemDiff(value, data))
             field = value
             notifyDataSetChanged()
+            //diffResult.dispatchUpdatesTo(this)
         }
 
     var itemClickListener: (Item) -> Unit = {}
+    var onRatingClickListener: (Item, Int) -> Unit = { _, _ ->}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
         return ItemsViewHolder(parent).apply {
             setOnClickListener { item ->
                 itemClickListener(data[item.adapterPosition])
+            }
+            onRatingClick = { item, rating ->
+                onRatingClickListener(data[item.adapterPosition], rating)
             }
         }
     }
@@ -34,6 +40,7 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
             it.itemTextView.text = item.name
             it.descriptionTextView.text = item.description
             it.photoImageView.visibility = if (item.imagePath.isNullOrEmpty()) View.GONE else View.VISIBLE
+            it.ratingBar.rating = item.rating.toFloat()
             Glide.with(it.photoImageView.context).load(data[position].imagePath).into(it.photoImageView)
         }
     }
@@ -47,6 +54,15 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
         val itemTextView = itemView.itemTextView
         val photoImageView = itemView.photoImageView
         val descriptionTextView = itemView.descriptionTextView
+        val ratingBar = itemView.ratingBar
+
+        init {
+            ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+                onRatingClick(this, rating.toInt())
+            }
+        }
+
+        var onRatingClick: (ClickableViewHolder, Int) -> Unit = { _, _ -> }
     }
 }
 

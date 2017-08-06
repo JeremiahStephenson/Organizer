@@ -20,16 +20,13 @@ import com.jerry.demo.organizer.util.tintAllIcons
 import com.nguyenhoanglam.imagepicker.activity.ImagePicker
 import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity
 import com.nguyenhoanglam.imagepicker.model.Image
-import kotlinx.android.synthetic.main.fragment_edit_item.*
+import kotlinx.android.synthetic.main.activity_edit_item.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Long
 import javax.inject.Inject
-
-
-
 
 class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
     private val lifecycleRegistry = LifecycleRegistry(this)
@@ -41,10 +38,9 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
     @Inject
     lateinit var itemDao: ItemDao
 
-    private var catId: Long = 0L
-    private var item: Item? = null
     private var deleteMenu: MenuItem? = null
     private var imgPath: String? = null
+
     private lateinit var viewModel: EditItemViewModel
 
     init {
@@ -53,18 +49,16 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_edit_item)
+        setContentView(R.layout.activity_edit_item)
         setSupportActionBar(mainToolbar)
 
         viewModel = ViewModelProviders.of(this).get(EditItemViewModel::class.java)
 
         viewModel.item.observe(this, Observer { data ->
-            item = data
-            showItemDetails()
+            data?.let { showItemDetails(it) }
         })
 
         intent.options {
-            catId = it.categoryId ?: 0L
             viewModel.setItemId(it.itemId ?: 0L)
             titleInputLayout.isHintAnimationEnabled = it.itemId == 0L
             descriptionInputLayout.isHintAnimationEnabled = it.itemId == 0L
@@ -104,15 +98,13 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
-    private fun showItemDetails() {
-        item?.let {
-            descriptionTextView.setText(it.description)
-            titleEditText.setText(it.name)
-            Glide.with(this).load(it.imagePath).into(itemImageView)
-            imgPath = it.imagePath
-            titleInputLayout.isHintAnimationEnabled = true
-            descriptionInputLayout.isHintAnimationEnabled = true
-        }
+    private fun showItemDetails(item: Item) {
+        descriptionTextView.setText(item.description)
+        titleEditText.setText(item.name)
+        Glide.with(this).load(item.imagePath).into(itemImageView)
+        imgPath = item.imagePath
+        titleInputLayout.isHintAnimationEnabled = true
+        descriptionInputLayout.isHintAnimationEnabled = true
     }
 
     private fun validate(): Boolean {
@@ -136,34 +128,28 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
     }
 
     private fun saveItem() {
+        if (!validate()) {
+            return
+        }
         launch(CommonPool) {
-            when (item == null) {
-                true -> {
-                    itemDao.insert(Item().apply {
-                        name = titleEditText.text.toString()
-                        description = descriptionTextView.text.toString()
-                        imagePath = imgPath ?: ""
-                        categoryId = catId
-                    })
-                }
-                else -> {
-                    item?.let {
-                        it.name = titleEditText.text.toString()
-                        it.description = descriptionTextView.text.toString()
-                        it.imagePath = imgPath ?: ""
-                        itemDao.update(it)
-                    }
-                }
-            }
+            itemDao.insert(Item().apply {
+                name = titleEditText.text.toString()
+                description = descriptionTextView.text.toString()
+                imagePath = imgPath ?: ""
+                id = intent.options { it.itemId } ?: 0L
+                categoryId = intent.options { it.categoryId } ?: 0L
+            })
             finish()
         }
     }
 
     private fun deleteItem() {
         launch(CommonPool) {
-            item?.let {
-                itemDao.deleteItem(it.id)
-                finish()
+            intent.options {
+                it.itemId?.let {
+                    itemDao.deleteItem(it)
+                    finish()
+                }
             }
         }
     }
