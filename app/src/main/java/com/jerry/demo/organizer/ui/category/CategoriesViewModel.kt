@@ -18,6 +18,6 @@ class CategoriesViewModel
 
     init {
         Injector.get().inject(this)
-        categories = categoryDao.findAll()
+        categories = categoryDao.findAllLive()
     }
 }

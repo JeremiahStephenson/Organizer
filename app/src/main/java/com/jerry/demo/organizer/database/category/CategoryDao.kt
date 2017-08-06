@@ -18,7 +18,10 @@ interface CategoryDao {
     fun deleteCategory(id: Long)
 
     @Query("SELECT * FROM category ORDER BY timestamp DESC")
-    fun findAll(): LiveData<List<Category>>
+    fun findAll(): List<Category>
+
+    @Query("SELECT * FROM category ORDER BY timestamp DESC")
+    fun findAllLive(): LiveData<List<Category>>
 
     @Query("SELECT * FROM category WHERE id = :id")
     fun findCategoryById(id: Long): LiveData<Category>

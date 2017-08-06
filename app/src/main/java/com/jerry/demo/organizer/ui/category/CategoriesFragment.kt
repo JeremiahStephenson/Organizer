@@ -32,7 +32,6 @@ class CategoriesFragment : BaseFragment() {
     private val categoriesAdapter by lazy {
         CategoriesAdapter().apply {
             itemClickListener = { category ->
-                // todo
                 goToItemList(category.id)
             }
         }
@@ -71,7 +70,9 @@ class CategoriesFragment : BaseFragment() {
                     .title(R.string.new_category)
                     .inputType(InputType.TYPE_CLASS_TEXT)
                     .input(R.string.category, 0, { _, input ->
-                        saveCategory(input.toString())
+                        if (!input.isNullOrEmpty()) {
+                            saveCategory(input.toString())
+                        }
                     }).show()
         }
     }
