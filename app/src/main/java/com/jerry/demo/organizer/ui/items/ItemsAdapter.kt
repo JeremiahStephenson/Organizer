@@ -35,11 +35,13 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     override fun onBindViewHolder(holder: ItemsViewHolder?, position: Int) {
         holder?.let {
             val item = data[position]
-            it.itemTextView.text = item.name
-            it.descriptionTextView.text = item.description
-            it.photoImageView.visibility = if (item.imagePath.isNullOrEmpty()) View.GONE else View.VISIBLE
-            it.ratingBar.rating = item.rating.toFloat()
-            Glide.with(it.photoImageView.context).load(data[position].imagePath).into(it.photoImageView)
+            if (item != it.item) {
+                it.itemTextView.text = item.name
+                it.descriptionTextView.text = item.description
+                it.photoImageView.visibility = if (item.imagePath.isNullOrEmpty()) View.GONE else View.VISIBLE
+                it.ratingBar.rating = item.rating.toFloat()
+                Glide.with(it.photoImageView.context).load(data[position].imagePath).into(it.photoImageView)
+            }
         }
     }
 
@@ -49,6 +51,7 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
 
     class ItemsViewHolder(parent: ViewGroup) : ClickableViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)) {
+        var item: Item? = null
         val itemTextView = itemView.itemTextView
         val photoImageView = itemView.photoImageView
         val descriptionTextView = itemView.descriptionTextView
