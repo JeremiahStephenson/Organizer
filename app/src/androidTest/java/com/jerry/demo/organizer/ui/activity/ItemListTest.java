@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import com.jerry.demo.organizer.R;
+import com.jerry.demo.organizer.ui.MainActivity;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

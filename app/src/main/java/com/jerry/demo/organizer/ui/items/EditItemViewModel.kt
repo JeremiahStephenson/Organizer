@@ -18,6 +18,7 @@ class EditItemViewModel
 
     private val itemId = MutableLiveData<Long>()
 
+    var imagePath: String? = null
     var item: LiveData<Item>
 
     init {

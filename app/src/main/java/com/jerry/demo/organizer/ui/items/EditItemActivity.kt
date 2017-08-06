@@ -31,6 +31,7 @@ import java.util.*
 import javax.inject.Inject
 
 class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
+    // used for live data
     private val lifecycleRegistry = LifecycleRegistry(this)
 
     override fun getLifecycle(): LifecycleRegistry {
@@ -40,8 +41,8 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
     @Inject
     lateinit var itemDao: ItemDao
 
+    // keep a reference to this menu option so we can enable or disable it later
     private var deleteMenu: MenuItem? = null
-    private var imgPath: String? = null
     private var item: Item? = null
 
     private lateinit var viewModel: EditItemViewModel
@@ -55,6 +56,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         setContentView(R.layout.activity_edit_item)
         setSupportActionBar(mainToolbar)
 
+        // enable back arrow in toolbar
         supportActionBar?.let {
             it.setHomeButtonEnabled(true)
             it.setDisplayHomeAsUpEnabled(true)
@@ -62,6 +64,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
         viewModel = ViewModelProviders.of(this).get(EditItemViewModel::class.java)
 
+        // loads the item if it exists
         viewModel.item.observe(this, Observer { data ->
             data?.let {
                 item = it
@@ -69,6 +72,11 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
             }
         })
 
+        viewModel.imagePath?.let {
+            Glide.with(this).load(viewModel.imagePath).into(itemImageView)
+        }
+
+        // set things up in the view if we're editing or creating
         intent.options {
             viewModel.setItemId(it.itemId ?: 0L)
             titleInputLayout.isHintAnimationEnabled = it.itemId == 0L
@@ -79,6 +87,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item_edit, menu)
+        // tint all toolbar icons white
         menu?.tintAllIcons(this, android.R.color.white)
         deleteMenu = menu?.findItem(R.id.menu_item_delete)
         intent.options {
@@ -99,16 +108,19 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         return super.onOptionsItemSelected(item)
     }
 
+    // called after the user has selected a photo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK) {
             val images = data?.getParcelableArrayListExtra<Parcelable>(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES)
+            // show the photo and save the path so we can save it in the db later
             if (images?.isNotEmpty() ?: false && images?.first() is Image) {
-                imgPath = (images.first() as Image).path
-                Glide.with(this).load(imgPath).into(itemImageView)
+                viewModel.imagePath = (images.first() as Image).path
+                Glide.with(this).load(viewModel.imagePath).into(itemImageView)
             }
         }
     }
 
+    // check if the user changed data so we can ask them if they want to save it
     private fun checkIfDifferent() {
         when (isDifferent()) {
             true -> {
@@ -124,22 +136,30 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
+    // displays the item's title, description, and photo if we're editing
     private fun showItemDetails(item: Item) {
         descriptionTextView.setText(item.description)
         titleEditText.setText(item.name)
+        when {
+            !viewModel.imagePath.isNullOrEmpty() -> item.imagePath = viewModel.imagePath ?: ""
+            else -> viewModel.imagePath = item.imagePath
+        }
         Glide.with(this).load(item.imagePath).into(itemImageView)
-        imgPath = item.imagePath
         titleInputLayout.isHintAnimationEnabled = true
         descriptionInputLayout.isHintAnimationEnabled = true
     }
 
+    // checks if the user has changed something
     private fun isDifferent(): Boolean {
         when (item) {
-            null -> return titleEditText.text.isNotEmpty() || descriptionTextView.text.isNotEmpty() || imgPath?.isNotEmpty() ?: false
-            else -> return item?.name != titleEditText.text.toString() || item?.description != descriptionTextView.text.toString() || item?.imagePath != imgPath
+            null -> return titleEditText.text.isNotEmpty() ||
+                    descriptionTextView.text.isNotEmpty() || viewModel.imagePath?.isNotEmpty() ?: false
+            else -> return item?.name != titleEditText.text.toString() ||
+                    item?.description != descriptionTextView.text.toString() || item?.imagePath != viewModel.imagePath
         }
     }
 
+    // performs form validation to make sure required fields have been filled out
     private fun validate(): Boolean {
         when (titleEditText.text.isEmpty()) {
             true -> {
@@ -160,6 +180,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         return true
     }
 
+    // saves the item in a separate thread if it passes validation
     private fun saveItem() {
         if (!validate()) {
             return
@@ -168,7 +189,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
             itemDao.insert(Item().apply {
                 name = titleEditText.text.toString()
                 description = descriptionTextView.text.toString()
-                imagePath = imgPath ?: ""
+                imagePath = viewModel.imagePath ?: ""
                 id = intent.options { it.itemId } ?: 0L
                 categoryId = intent.options { it.categoryId } ?: 0L
                 timestamp = Calendar.getInstance().timeInMillis
@@ -177,6 +198,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
+    // confirm that the user wants to delete the item
     private fun confirmDeleteItem() {
         item?.let {
             MaterialDialog.Builder(this)
@@ -188,6 +210,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
+    // deletes the item in a separate thread
     private fun deleteItem() {
         item?.let {
             launch(CommonPool) {
@@ -197,6 +220,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
+    // launches the photo selection ui
     private fun selectPhoto() {
         ImagePicker.create(this)
                 .folderMode(true)

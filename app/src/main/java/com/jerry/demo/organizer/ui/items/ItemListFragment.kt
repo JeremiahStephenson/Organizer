@@ -14,7 +14,7 @@ import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.inject.Injector
-import com.jerry.demo.organizer.ui.fragment.BaseFragment
+import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.widget.SpaceItemDecorator
 import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -22,9 +22,6 @@ import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.bundle.BundleExtra
 import me.eugeniomarletti.extras.bundle.base.Long
 import javax.inject.Inject
-
-
-
 
 class ItemListFragment : BaseFragment() {
 
@@ -64,6 +61,7 @@ class ItemListFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // observe changes in the selected category
         viewModel.category.observe(this, Observer { data ->
             data?.let {
                 category = it
@@ -71,6 +69,7 @@ class ItemListFragment : BaseFragment() {
             }
         })
 
+        // observe changes in the items
         viewModel.items.observe(this, Observer { data ->
             data?.let {
                 itemsAdapter.data = it
@@ -107,14 +106,17 @@ class ItemListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
+        // allow more columns if the screen is bigger
         val manager = StaggeredGridLayoutManager(resources.getInteger(R.integer.num_cols), StaggeredGridLayoutManager.VERTICAL)
         manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         itemsRecyclerView.layoutManager = manager
 
         itemsRecyclerView.adapter = itemsAdapter
+        // add spaces around the items since they're displayed in a cardview
         itemsRecyclerView.addItemDecoration(SpaceItemDecorator(resources.getDimension(R.dimen.card_view_list_margin).toInt()))
     }
 
+    // show the item edit activity
     private fun goToItemEdit(itemId: Long = 0L) {
         EditItemActivity.start(context) {
             it.itemId = itemId
@@ -128,6 +130,7 @@ class ItemListFragment : BaseFragment() {
         }
     }
 
+    // confirm that the user wants to delete the category
     private fun confirmDeleteCategory() {
         category?.let {
             MaterialDialog.Builder(activity)
@@ -139,6 +142,7 @@ class ItemListFragment : BaseFragment() {
         }
     }
 
+    // delete the category in a separate thread
     private fun deleteCategory() {
         launch(CommonPool) {
             category?.let {

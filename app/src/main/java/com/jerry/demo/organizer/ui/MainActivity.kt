@@ -1,4 +1,4 @@
-package com.jerry.demo.organizer.ui.activity
+package com.jerry.demo.organizer.ui
 
 import com.jerry.demo.organizer.ui.category.CategoriesFragment
 

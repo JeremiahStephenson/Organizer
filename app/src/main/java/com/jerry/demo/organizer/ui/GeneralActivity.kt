@@ -1,4 +1,4 @@
-package com.jerry.demo.organizer.ui.activity
+package com.jerry.demo.organizer.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,13 +13,18 @@ import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Bundle
 import me.eugeniomarletti.extras.intent.base.Serializable
 
+/**
+ * General use activity that only displays a fragment
+ */
 open class GeneralActivity : AppCompatActivity() {
+    // get the fragment class from the intent extras
     open protected fun getFragmentClass(): Class<*> {
         intent.options {
             return it.fragmentClass!!
         }
     }
 
+    // get the fragment bundle arguments from the intent extras
     open protected fun getFragmentArgs(): Bundle? {
         intent.options {
             it.fragmentBundle?.let {
@@ -33,10 +38,14 @@ open class GeneralActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_general)
         setSupportActionBar(mainToolbar)
+
+        // show the back button
         supportActionBar?.let {
             it.setHomeButtonEnabled(showBackButton())
             it.setDisplayHomeAsUpEnabled(showBackButton())
         }
+
+        // only setup the fragment when the activity is created initially
         if (savedInstanceState == null) {
             displayFragment(this, getFragmentClass(), getFragmentArgs())
         }
@@ -53,6 +62,7 @@ open class GeneralActivity : AppCompatActivity() {
         return true
     }
 
+    // displays fragment and passes in bundle arguments
     private fun displayFragment(activity: FragmentActivity, fragmentClass: Class<*>, args: Bundle? = null) {
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_pos1,

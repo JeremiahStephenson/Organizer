@@ -12,8 +12,8 @@ import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.inject.Injector
-import com.jerry.demo.organizer.ui.activity.GeneralActivity
-import com.jerry.demo.organizer.ui.fragment.BaseFragment
+import com.jerry.demo.organizer.ui.BaseFragment
+import com.jerry.demo.organizer.ui.GeneralActivity
 import com.jerry.demo.organizer.ui.items.ItemListFragment
 import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -53,9 +53,13 @@ class CategoriesFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setTitle(R.string.categories)
+
+        // observe changes in the list of categories
         viewModel.categories.observe(this, Observer { data ->
             data?.let {
+                // pass the data to the adapter
                 categoriesAdapter.data = it
+                // if no data then show the empty text view
                 emptyTextView.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             }
         })
@@ -65,6 +69,8 @@ class CategoriesFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         emptyTextView.text = getString(R.string.no_categories)
         setupRecyclerView()
+
+        // show an edit text in a dialog for creating a new category
         btnNewItem.setOnClickListener {
             MaterialDialog.Builder(activity)
                     .title(R.string.new_category)
@@ -78,6 +84,7 @@ class CategoriesFragment : BaseFragment() {
     }
 
     private fun saveCategory(category: String) {
+        // save the category in a separate thread
         launch(CommonPool) {
             categoryDao.insert(Category().apply {
                 name = category
@@ -93,6 +100,7 @@ class CategoriesFragment : BaseFragment() {
     }
 
     private fun goToItemList(categoryId: Long) {
+        // show the item list for the category
         GeneralActivity.start(context) {
             val bundle: Bundle = Bundle()
             with(ItemListFragment.BundleOptions) {
