@@ -1,6 +1,7 @@
 package com.jerry.demo.organizer.ui.items
 
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,13 +9,15 @@ import com.bumptech.glide.Glide
 import com.devbrackets.android.recyclerext.adapter.viewholder.ClickableViewHolder
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
+import com.jerry.demo.organizer.database.item.ItemDiff
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     var data: List<Item> = mutableListOf()
         set(value) {
+            val diff = DiffUtil.calculateDiff(ItemDiff(value, data))
             field = value
-            notifyDataSetChanged()
+            diff.dispatchUpdatesTo(this)
         }
 
     var itemClickListener: (Item) -> Unit = {}

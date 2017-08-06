@@ -16,7 +16,7 @@ import java.io.IOException
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+class ItemDatabaseInstrumentedTest {
 
     lateinit var db: MainDatabase
     lateinit var itemDao: ItemDao
