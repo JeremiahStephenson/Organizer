@@ -18,6 +18,7 @@ import com.jerry.demo.organizer.ui.items.ItemListFragment
 import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
+import java.util.*
 import javax.inject.Inject
 
 
@@ -79,6 +80,7 @@ class CategoriesFragment : BaseFragment() {
         launch(CommonPool) {
             categoryDao.insert(Category().apply {
                 name = category
+                timestamp = Calendar.getInstance().timeInMillis
             })
         }
     }

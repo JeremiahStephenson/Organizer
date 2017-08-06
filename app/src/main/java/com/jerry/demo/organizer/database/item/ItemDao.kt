@@ -24,7 +24,7 @@ interface ItemDao {
     @Query("SELECT * FROM item WHERE id = :id")
     fun findItemById(id: Long): LiveData<Item>
 
-    @Query("SELECT * FROM item WHERE categoryId = :categoryId")
+    @Query("SELECT * FROM item WHERE categoryId = :categoryId ORDER BY timestamp DESC")
     fun findItemsByCategoryId(categoryId: Long): LiveData<List<Item>>
 
     @Query("UPDATE item SET rating = :rating WHERE id = :id")

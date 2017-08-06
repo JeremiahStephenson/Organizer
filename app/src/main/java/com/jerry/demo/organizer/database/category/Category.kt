@@ -8,4 +8,5 @@ class Category {
     @PrimaryKey(autoGenerate = true)
     var id = 0L
     var name = ""
+    var timestamp = 0L
 }

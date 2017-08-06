@@ -6,4 +6,8 @@ class MainActivity : GeneralActivity() {
     override fun getFragmentClass(): Class<*> {
         return CategoriesFragment::class.java
     }
+
+    override fun showBackButton(): Boolean {
+        return false
+    }
 }

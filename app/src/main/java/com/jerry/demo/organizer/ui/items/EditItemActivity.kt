@@ -11,6 +11,7 @@ import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
@@ -26,6 +27,7 @@ import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Long
+import java.util.*
 import javax.inject.Inject
 
 class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
@@ -40,6 +42,7 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
 
     private var deleteMenu: MenuItem? = null
     private var imgPath: String? = null
+    private var item: Item? = null
 
     private lateinit var viewModel: EditItemViewModel
 
@@ -52,10 +55,18 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         setContentView(R.layout.activity_edit_item)
         setSupportActionBar(mainToolbar)
 
+        supportActionBar?.let {
+            it.setHomeButtonEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
+
         viewModel = ViewModelProviders.of(this).get(EditItemViewModel::class.java)
 
         viewModel.item.observe(this, Observer { data ->
-            data?.let { showItemDetails(it) }
+            data?.let {
+                item = it
+                showItemDetails(it)
+            }
         })
 
         intent.options {
@@ -80,11 +91,11 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         item?.let {
             when (it.itemId) {
                 R.id.menu_item_save -> saveItem()
-                R.id.menu_item_delete -> deleteItem()
+                R.id.menu_item_delete -> confirmDeleteItem()
                 R.id.menu_item_photo -> selectPhoto()
+                android.R.id.home -> checkIfDifferent()
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -98,6 +109,21 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         }
     }
 
+    private fun checkIfDifferent() {
+        when (isDifferent()) {
+            true -> {
+                MaterialDialog.Builder(this)
+                        .title(R.string.save_changes)
+                        .negativeText(R.string.no)
+                        .positiveText(R.string.yes)
+                        .onPositive { _, _ -> saveItem() }
+                        .onNegative { _, _ -> finish() }
+                        .show()
+            }
+            else -> finish()
+        }
+    }
+
     private fun showItemDetails(item: Item) {
         descriptionTextView.setText(item.description)
         titleEditText.setText(item.name)
@@ -105,6 +131,13 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
         imgPath = item.imagePath
         titleInputLayout.isHintAnimationEnabled = true
         descriptionInputLayout.isHintAnimationEnabled = true
+    }
+
+    private fun isDifferent(): Boolean {
+        when (item) {
+            null -> return titleEditText.text.isNotEmpty() || descriptionTextView.text.isNotEmpty() || imgPath?.isNotEmpty() ?: false
+            else -> return item?.name != titleEditText.text.toString() || item?.description != descriptionTextView.text.toString() || item?.imagePath != imgPath
+        }
     }
 
     private fun validate(): Boolean {
@@ -138,18 +171,28 @@ class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
                 imagePath = imgPath ?: ""
                 id = intent.options { it.itemId } ?: 0L
                 categoryId = intent.options { it.categoryId } ?: 0L
+                timestamp = Calendar.getInstance().timeInMillis
             })
             finish()
         }
     }
 
+    private fun confirmDeleteItem() {
+        item?.let {
+            MaterialDialog.Builder(this)
+                    .title(getString(R.string.are_sure_delete, it.name))
+                    .negativeText(R.string.cancel)
+                    .positiveText(R.string.yes)
+                    .onPositive { _, _ -> deleteItem() }
+                    .show()
+        }
+    }
+
     private fun deleteItem() {
-        launch(CommonPool) {
-            intent.options {
-                it.itemId?.let {
-                    itemDao.deleteItem(it)
-                    finish()
-                }
+        item?.let {
+            launch(CommonPool) {
+                itemDao.deleteItem(it.id)
+                finish()
             }
         }
     }

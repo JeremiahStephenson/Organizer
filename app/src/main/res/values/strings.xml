@@ -6,6 +6,13 @@
     <string name="categories">Categories</string>
     <string name="no_categories">No Categories</string>
     <string name="new_category">New Category</string>
+    <string name="delete_category">Delete Category</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="are_sure_delete">Are you sure you want to delete: %1$s?</string>
+    <string name="save_changes">Would you like to save your changes?</string>
 
     <string name="no_items">No Items</string>
     <string name="title">Title</string>

@@ -14,10 +14,8 @@ import kotlinx.android.synthetic.main.list_item.view.*
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     var data: List<Item> = mutableListOf()
         set(value) {
-            //val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(ItemDiff(value, data))
             field = value
             notifyDataSetChanged()
-            //diffResult.dispatchUpdatesTo(this)
         }
 
     var itemClickListener: (Item) -> Unit = {}

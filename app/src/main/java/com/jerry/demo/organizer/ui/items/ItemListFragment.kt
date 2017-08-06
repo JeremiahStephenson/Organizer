@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import com.afollestad.materialdialogs.MaterialDialog
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
@@ -100,7 +101,7 @@ class ItemListFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.menu_item_delete) {
-            deleteCategory()
+            confirmDeleteCategory()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -124,6 +125,17 @@ class ItemListFragment : BaseFragment() {
     private fun saveItemRating(itemId: Long, rating: Int) {
         launch(CommonPool) {
             itemDao.setItemRating(itemId, rating)
+        }
+    }
+
+    private fun confirmDeleteCategory() {
+        category?.let {
+            MaterialDialog.Builder(activity)
+                    .title(getString(R.string.are_sure_delete, it.name))
+                    .negativeText(R.string.cancel)
+                    .positiveText(R.string.yes)
+                    .onPositive { _, _ -> deleteCategory() }
+                    .show()
         }
     }
 
