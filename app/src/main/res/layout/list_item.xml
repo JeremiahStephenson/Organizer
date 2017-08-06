@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:lines="1"
             android:ellipsize="end"
             android:textColor="@android:color/primary_text_light"
