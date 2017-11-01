@@ -16,11 +16,17 @@ class LifecycleWatcher @Inject constructor() : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart(source: LifecycleOwner) {
+        if (source is ProcessLifecycleOwner) {
+            return
+        }
         Log.d("LifeCycleTest", "Activity Start")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop(source: LifecycleOwner) {
+        if (source is ProcessLifecycleOwner) {
+            return
+        }
         Log.d("LifeCycleTest", "Activity Stop")
     }
 
