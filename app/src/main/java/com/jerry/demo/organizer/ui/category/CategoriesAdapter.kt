@@ -1,6 +1,5 @@
 package com.jerry.demo.organizer.ui.category
 
-
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -21,7 +21,6 @@ import kotlinx.coroutines.experimental.launch
 import java.util.*
 import javax.inject.Inject
 
-
 class CategoriesFragment : BaseFragment() {
 
     @Inject
@@ -85,7 +84,7 @@ class CategoriesFragment : BaseFragment() {
 
     private fun saveCategory(category: String) {
         // save the category in a separate thread
-        launch(CommonPool) {
+        val job = launch(CommonPool) {
             categoryDao.insert(Category().apply {
                 name = category
                 timestamp = Calendar.getInstance().timeInMillis
