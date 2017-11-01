@@ -16,7 +16,7 @@ import me.eugeniomarletti.extras.intent.base.Serializable
 /**
  * General use activity that only displays a fragment
  */
-open class GeneralActivity : AppCompatActivity() {
+open class GeneralActivity : BaseActivity() {
     // get the fragment class from the intent extras
     open protected fun getFragmentClass(): Class<*> {
         intent.options {

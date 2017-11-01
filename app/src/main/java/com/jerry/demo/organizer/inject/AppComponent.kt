@@ -2,6 +2,7 @@ package com.jerry.demo.organizer.inject
 
 
 import com.jerry.demo.organizer.App
+import com.jerry.demo.organizer.ui.BaseActivity
 import com.jerry.demo.organizer.ui.category.CategoriesFragment
 import com.jerry.demo.organizer.ui.category.CategoriesViewModel
 import com.jerry.demo.organizer.ui.items.EditItemActivity
@@ -19,6 +20,7 @@ interface AppComponent {
     fun inject(target: CategoriesFragment)
     fun inject(target: ItemListFragment)
     fun inject(target: EditItemActivity)
+    fun inject(target: BaseActivity)
 
     fun inject(target: CategoriesViewModel)
     fun inject(target: ItemListViewModel)

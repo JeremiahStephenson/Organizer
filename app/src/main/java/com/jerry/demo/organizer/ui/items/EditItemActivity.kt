@@ -17,6 +17,7 @@ import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.inject.Injector
+import com.jerry.demo.organizer.ui.BaseActivity
 import com.jerry.demo.organizer.util.tintAllIcons
 import com.nguyenhoanglam.imagepicker.activity.ImagePicker
 import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity
@@ -30,13 +31,7 @@ import me.eugeniomarletti.extras.intent.base.Long
 import java.util.*
 import javax.inject.Inject
 
-class EditItemActivity : AppCompatActivity(), LifecycleRegistryOwner {
-    // used for live data
-    private val lifecycleRegistry = LifecycleRegistry(this)
-
-    override fun getLifecycle(): LifecycleRegistry {
-        return this.lifecycleRegistry
-    }
+class EditItemActivity : BaseActivity() {
 
     @Inject
     lateinit var itemDao: ItemDao
