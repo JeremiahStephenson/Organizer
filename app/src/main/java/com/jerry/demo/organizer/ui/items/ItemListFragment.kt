@@ -2,6 +2,7 @@ package com.jerry.demo.organizer.ui.items
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.Menu
@@ -36,7 +37,7 @@ class ItemListFragment : BaseFragment() {
     private val itemsAdapter by lazy {
         ItemsAdapter().apply {
             itemClickListener = { item ->
-                goToItemEdit(item.id)
+                activity?.let { goToItemEdit(it, item.id) }
             }
             onRatingClickListener = { item, rating ->
                 saveItemRating(item.id, rating)
@@ -84,12 +85,12 @@ class ItemListFragment : BaseFragment() {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         emptyTextView.text = getString(R.string.no_items)
         setupRecyclerView()
         btnNewItem.setOnClickListener {
-            goToItemEdit()
+            goToItemEdit(view.context)
         }
     }
 
@@ -117,7 +118,7 @@ class ItemListFragment : BaseFragment() {
     }
 
     // show the item edit activity
-    private fun goToItemEdit(itemId: Long = 0L) {
+    private fun goToItemEdit(context: Context, itemId: Long = 0L) {
         EditItemActivity.start(context) {
             it.itemId = itemId
             it.categoryId = category?.id ?: 0L
@@ -132,13 +133,15 @@ class ItemListFragment : BaseFragment() {
 
     // confirm that the user wants to delete the category
     private fun confirmDeleteCategory() {
-        category?.let {
-            MaterialDialog.Builder(activity)
-                    .title(getString(R.string.are_sure_delete, it.name))
-                    .negativeText(R.string.cancel)
-                    .positiveText(R.string.yes)
-                    .onPositive { _, _ -> deleteCategory() }
-                    .show()
+        activity?.let {
+            category?.let {
+                MaterialDialog.Builder(activity!!)
+                        .title(getString(R.string.are_sure_delete, it.name))
+                        .negativeText(R.string.cancel)
+                        .positiveText(R.string.yes)
+                        .onPositive { _, _ -> deleteCategory() }
+                        .show()
+            }
         }
     }
 
@@ -147,7 +150,7 @@ class ItemListFragment : BaseFragment() {
         launch(CommonPool) {
             category?.let {
                 categoryDao.deleteCategory(it.id)
-                activity.finish()
+                activity?.finish()
             }
         }
     }

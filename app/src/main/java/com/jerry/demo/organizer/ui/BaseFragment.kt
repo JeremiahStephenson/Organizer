@@ -14,21 +14,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.jerry.demo.organizer.util.tintAllIcons
 
-abstract class BaseFragment : Fragment(), LifecycleRegistryOwner {
-    // used for live data
-    private val lifecycleRegistry = LifecycleRegistry(this)
-
-    override fun getLifecycle(): LifecycleRegistry {
-        return this.lifecycleRegistry
-    }
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+abstract class BaseFragment : Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater!!.inflate(getLayoutResourceId(), container, false)
+        val view = inflater.inflate(getLayoutResourceId(), container, false)
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onPostCreateView()
     }
@@ -47,7 +40,9 @@ abstract class BaseFragment : Fragment(), LifecycleRegistryOwner {
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         // tint all toolbar icons white
-        menu?.tintAllIcons(activity, android.R.color.white)
+        activity?.let {
+            menu?.tintAllIcons(it, android.R.color.white)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 

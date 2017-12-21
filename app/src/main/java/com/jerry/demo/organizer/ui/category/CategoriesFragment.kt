@@ -64,14 +64,14 @@ class CategoriesFragment : BaseFragment() {
         })
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         emptyTextView.text = getString(R.string.no_categories)
         setupRecyclerView()
 
         // show an edit text in a dialog for creating a new category
         btnNewItem.setOnClickListener {
-            MaterialDialog.Builder(activity)
+            MaterialDialog.Builder(view.context)
                     .title(R.string.new_category)
                     .inputType(InputType.TYPE_CLASS_TEXT)
                     .input(R.string.category, 0, { _, input ->
@@ -100,13 +100,15 @@ class CategoriesFragment : BaseFragment() {
 
     private fun goToItemList(categoryId: Long) {
         // show the item list for the category
-        GeneralActivity.start(context) {
-            val bundle: Bundle = Bundle()
-            with(ItemListFragment.BundleOptions) {
-                bundle.categoryId = categoryId
+        context?.let {
+            GeneralActivity.start(it) {
+                val bundle: Bundle = Bundle()
+                with(ItemListFragment.BundleOptions) {
+                    bundle.categoryId = categoryId
+                }
+                it.fragmentBundle = bundle
+                it.fragmentClass = ItemListFragment::class.java
             }
-            it.fragmentBundle = bundle
-            it.fragmentClass = ItemListFragment::class.java
         }
     }
 }

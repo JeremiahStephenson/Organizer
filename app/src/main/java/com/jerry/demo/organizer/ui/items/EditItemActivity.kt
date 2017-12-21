@@ -1,14 +1,11 @@
 package com.jerry.demo.organizer.ui.items
 
 import android.app.Activity
-import android.arch.lifecycle.LifecycleRegistry
-import android.arch.lifecycle.LifecycleRegistryOwner
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.afollestad.materialdialogs.MaterialDialog
