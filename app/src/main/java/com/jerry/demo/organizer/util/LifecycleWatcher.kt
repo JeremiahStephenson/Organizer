@@ -4,7 +4,8 @@ import android.arch.lifecycle.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import android.util.Log
-
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ProcessLifecycleOwner
 
 @Singleton
 class LifecycleWatcher @Inject constructor() : LifecycleObserver {

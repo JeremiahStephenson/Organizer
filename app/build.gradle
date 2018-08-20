@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.ben-manes.versions' // ./gradlew dependencyUpdates -Drevision=release
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.jerry.demo.organizer"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -25,44 +26,49 @@ android {
 
 ext {
     // versions for libraries that multiple dependencies
-    supportLibVersion = '27.0.2'
-    daggerVersion = '2.11'
-    archVersion = '1.0.0'
+    constraintLayout = '1.1.2'
+    androidx = '1.0.0-rc01'
+    daggerVersion = '2.17'
+    room = '1.1.1'
+    archVersion = '2.0.0-rc01'
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:$supportLibVersion"
-    implementation "com.android.support:cardview-v7:$supportLibVersion"
-    implementation "com.android.support:design:$supportLibVersion"
-    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
-    implementation "com.android.support:support-v13:$supportLibVersion" // used by material dialog
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-
-    implementation group: 'com.cloudinary', name: 'cloudinary-android', version: '1.20.0'
+    // todo check for any that are not really needed
+    implementation "androidx.fragment:fragment:$androidx"
+    implementation "androidx.recyclerview:recyclerview:$androidx"
+    implementation "androidx.appcompat:appcompat:$androidx"
+    implementation "androidx.cardview:cardview:$androidx"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayout"
+    implementation "com.google.android.material:material:$androidx"
 
     // Architecture
-    implementation "android.arch.lifecycle:runtime:$archVersion"
-    implementation "android.arch.lifecycle:extensions:$archVersion"
-    implementation "android.arch.persistence.room:runtime:$archVersion"
-    kapt "android.arch.lifecycle:compiler:$archVersion"
-    kapt "android.arch.persistence.room:compiler:$archVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$archVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$archVersion"
+    implementation "androidx.room:room-runtime:$archVersion"
+    kapt "androidx.room:room-compiler:$archVersion"
 
     // Code
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.18"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.24.0"
     implementation 'me.eugeniomarletti:android-extras-delegates:1.0.5'
-    implementation 'com.devbrackets.android:recyclerext:2.1.1'
-    implementation 'com.afollestad.material-dialogs:commons:0.9.4.5'
-    implementation 'com.github.nguyenhoanglam:ImagePicker:1.1.3'
+    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation 'com.github.nguyenhoanglam:ImagePicker:1.3.0'
 
     // Dagger 2
     implementation "com.google.dagger:dagger:${daggerVersion}"
     kapt "com.google.dagger:dagger-compiler:${daggerVersion}"
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'design'

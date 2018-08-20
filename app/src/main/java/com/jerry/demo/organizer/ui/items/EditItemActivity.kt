@@ -1,13 +1,13 @@
 package com.jerry.demo.organizer.ui.items
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.jerry.demo.organizer.R
@@ -16,9 +16,10 @@ import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.BaseActivity
 import com.jerry.demo.organizer.util.tintAllIcons
-import com.nguyenhoanglam.imagepicker.activity.ImagePicker
-import com.nguyenhoanglam.imagepicker.activity.ImagePickerActivity
+import com.nguyenhoanglam.imagepicker.model.Config
 import com.nguyenhoanglam.imagepicker.model.Image
+import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker
+import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerActivity
 import kotlinx.android.synthetic.main.activity_edit_item.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -106,10 +107,10 @@ class EditItemActivity : BaseActivity() {
 
     // called after the user has selected a photo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_PICKER && resultCode == Activity.RESULT_OK) {
-            val images = data?.getParcelableArrayListExtra<Parcelable>(ImagePickerActivity.INTENT_EXTRA_SELECTED_IMAGES)
+        if (requestCode == Config.RC_PICK_IMAGES && resultCode == Activity.RESULT_OK) {
+            val images = data?.getParcelableArrayListExtra<Parcelable>(Config.EXTRA_IMAGES)
             // show the photo and save the path so we can save it in the db later
-            if (images?.isNotEmpty() ?: false && images?.first() is Image) {
+            if (images?.isNotEmpty() == true && images.first() is Image) {
                 viewModel.imagePath = (images.first() as Image).path
                 Glide.with(this).load(viewModel.imagePath).into(itemImageView)
             }
@@ -221,18 +222,17 @@ class EditItemActivity : BaseActivity() {
 
     // launches the photo selection ui
     private fun selectPhoto() {
-        ImagePicker.create(this)
-                .folderMode(true)
-                .folderTitle(getString(R.string.folder))
-                .imageTitle(getString(R.string.tap_to_select))
-                .single()
-                .showCamera(true)
-                .imageDirectory(CAMERA_DIRECTORY)
-                .start(REQUEST_CODE_PICKER);
+        ImagePicker.with(this)
+                .setFolderMode(true)
+                .setFolderTitle(getString(R.string.folder))
+                .setImageTitle(getString(R.string.tap_to_select))
+                //.single()
+                .setShowCamera(true)
+                //.setImageDirectory(CAMERA_DIRECTORY)
+                .start()
     }
 
     companion object : ActivityCompanion<IntentOptions>(IntentOptions, EditItemActivity::class) {
-        val REQUEST_CODE_PICKER = 300
         val CAMERA_DIRECTORY = "Camera"
     }
 

@@ -1,7 +1,8 @@
 package com.jerry.demo.organizer.util
 
-import android.arch.persistence.room.RoomDatabase
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
+import androidx.room.RoomDatabase
+
 
 @WorkerThread
 fun RoomDatabase.clear() {

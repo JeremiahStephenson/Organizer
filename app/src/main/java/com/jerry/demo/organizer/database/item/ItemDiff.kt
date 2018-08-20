@@ -1,7 +1,8 @@
 package com.jerry.demo.organizer.database.item
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 
+// todo change to async diff
 class ItemDiff(val newItems: List<Item>, val oldItems: List<Item>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldItems.size

@@ -1,12 +1,12 @@
 package com.jerry.demo.organizer.ui.category
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.text.InputType
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.category.Category
@@ -74,11 +74,11 @@ class CategoriesFragment : BaseFragment() {
             MaterialDialog.Builder(view.context)
                     .title(R.string.new_category)
                     .inputType(InputType.TYPE_CLASS_TEXT)
-                    .input(R.string.category, 0, { _, input ->
+                    .input(R.string.category, 0) { _, input ->
                         if (!input.isNullOrEmpty()) {
                             saveCategory(input.toString())
                         }
-                    }).show()
+                    }.show()
         }
     }
 

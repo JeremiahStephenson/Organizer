@@ -1,12 +1,10 @@
 package com.jerry.demo.organizer.ui.items
 
-
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.devbrackets.android.recyclerext.adapter.viewholder.ClickableViewHolder
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDiff
@@ -25,24 +23,23 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
         return ItemsViewHolder(parent).apply {
-            setOnClickListener { item ->
-                itemClickListener(data[item.adapterPosition])
-            }
+            // todo fix this
+//            setOnClickListener { item ->
+//                itemClickListener(data[item.adapterPosition])
+//            }
             onRatingClick = { item, rating ->
                 onRatingClickListener(data[item.adapterPosition], rating)
             }
         }
     }
 
-    override fun onBindViewHolder(holder: ItemsViewHolder?, position: Int) {
-        holder?.let {
-            val item = data[position]
-            if (item != it.item) {
-                it.itemTextView.text = item.name
-                it.descriptionTextView.text = item.description
-                it.ratingBar.rating = item.rating.toFloat()
-                Glide.with(it.photoImageView.context).load(data[position].imagePath).into(it.photoImageView)
-            }
+    override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
+        val item = data[position]
+        if (item != holder.item) {
+            holder.itemTextView.text = item.name
+            holder.descriptionTextView.text = item.description
+            holder.ratingBar.rating = item.rating.toFloat()
+            Glide.with(holder.photoImageView.context).load(data[position].imagePath).into(holder.photoImageView)
         }
     }
 
@@ -50,7 +47,7 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
         return data.count()
     }
 
-    class ItemsViewHolder(parent: ViewGroup) : ClickableViewHolder(
+    class ItemsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)) {
         var item: Item? = null
         val itemTextView = itemView.itemTextView
@@ -64,7 +61,7 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
             }
         }
 
-        var onRatingClick: (ClickableViewHolder, Int) -> Unit = { _, _ -> }
+        var onRatingClick: (RecyclerView.ViewHolder, Int) -> Unit = { _, _ -> }
     }
 }
 

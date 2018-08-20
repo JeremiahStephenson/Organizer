@@ -1,7 +1,7 @@
 package com.jerry.demo.organizer.database
 
 import android.app.Application
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import com.jerry.demo.organizer.database.MainDatabase
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.database.item.ItemDao
