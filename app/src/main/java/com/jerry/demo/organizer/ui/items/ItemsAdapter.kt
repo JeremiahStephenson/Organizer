@@ -21,17 +21,7 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     var itemClickListener: (Item) -> Unit = {}
     var onRatingClickListener: (Item, Int) -> Unit = { _, _ ->}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder {
-        return ItemsViewHolder(parent).apply {
-            // todo fix this
-//            setOnClickListener { item ->
-//                itemClickListener(data[item.adapterPosition])
-//            }
-            onRatingClick = { item, rating ->
-                onRatingClickListener(data[item.adapterPosition], rating)
-            }
-        }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder = ItemsViewHolder(parent)
 
     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
         val item = data[position]
@@ -43,11 +33,9 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.count()
-    }
+    override fun getItemCount(): Int = data.count()
 
-    class ItemsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
+    inner class ItemsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)) {
         var item: Item? = null
         val itemTextView = itemView.itemTextView
@@ -57,11 +45,10 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
 
         init {
             ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-                onRatingClick(this, rating.toInt())
+                onRatingClickListener(data[adapterPosition], rating.toInt())
             }
+            itemView.itemContainer.setOnClickListener { itemClickListener(data[adapterPosition]) }
         }
-
-        var onRatingClick: (RecyclerView.ViewHolder, Int) -> Unit = { _, _ -> }
     }
 }
 

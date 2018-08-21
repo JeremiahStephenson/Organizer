@@ -1,7 +1,7 @@
 package com.jerry.demo.organizer.util
 
-import android.support.annotation.ColorInt
 import android.view.MenuItem
+import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 
 fun MenuItem.tintIcon(@ColorInt colorInt: Int) {

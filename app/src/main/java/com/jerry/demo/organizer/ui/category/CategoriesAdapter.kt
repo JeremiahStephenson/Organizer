@@ -16,26 +16,22 @@ class CategoriesAdapter : RecyclerView.Adapter<CategoriesAdapter.CategoriesViewH
 
     var itemClickListener: (Category) -> Unit = {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
-        return CategoriesViewHolder(parent).apply {
-            // todo fix this
-//            setOnClickListener { item ->
-//                itemClickListener(data[item.adapterPosition])
-//            }
-        }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder = CategoriesViewHolder(parent)
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         holder.categoryTextView?.text = data[position].name
     }
 
-    override fun getItemCount(): Int {
-        return data.count()
-    }
+    override fun getItemCount(): Int = data.count()
 
-    class CategoriesViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
+    inner class CategoriesViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
             LayoutInflater.from(parent.context).inflate(R.layout.list_category, parent, false)) {
         val categoryTextView = itemView.categoryTextView
+        init {
+            itemView.categoryContainer.setOnClickListener {
+                itemClickListener(data[adapterPosition])
+            }
+        }
     }
 }
 
