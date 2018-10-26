@@ -2,6 +2,7 @@ package com.jerry.demo.organizer.ui.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -11,11 +12,12 @@ import com.jerry.demo.organizer.database.item.ItemDiff
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
+    private val differ = AsyncListDiffer(this, ItemDiff<Item>())
+
     var data: List<Item> = mutableListOf()
         set(value) {
-            val diff = DiffUtil.calculateDiff(ItemDiff(value, data))
             field = value
-            diff.dispatchUpdatesTo(this)
+            differ.submitList(value)
         }
 
     var itemClickListener: (Item) -> Unit = {}
@@ -24,16 +26,16 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsViewHolder = ItemsViewHolder(parent)
 
     override fun onBindViewHolder(holder: ItemsViewHolder, position: Int) {
-        val item = data[position]
+        val item = differ.currentList[position]
         if (item != holder.item) {
             holder.itemTextView.text = item.name
             holder.descriptionTextView.text = item.description
             holder.ratingBar.rating = item.rating.toFloat()
-            Glide.with(holder.photoImageView.context).load(data[position].imagePath).into(holder.photoImageView)
+            Glide.with(holder.photoImageView.context).load(item.imagePath).into(holder.photoImageView)
         }
     }
 
-    override fun getItemCount(): Int = data.count()
+    override fun getItemCount(): Int = differ.currentList.count()
 
     inner class ItemsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder (
             LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)) {
@@ -45,9 +47,9 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
 
         init {
             ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-                onRatingClickListener(data[adapterPosition], rating.toInt())
+                onRatingClickListener(differ.currentList[adapterPosition], rating.toInt())
             }
-            itemView.itemContainer.setOnClickListener { itemClickListener(data[adapterPosition]) }
+            itemView.itemContainer.setOnClickListener { itemClickListener(differ.currentList[adapterPosition]) }
         }
     }
 }

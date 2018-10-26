@@ -1,40 +1,26 @@
 package com.jerry.demo.organizer.ui.items
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
-import com.jerry.demo.organizer.inject.Injector
 import javax.inject.Inject
 
 class ItemListViewModel
-@Inject constructor(application: Application) : AndroidViewModel(application) {
-
-    @Inject
-    lateinit var categoryDao: CategoryDao
-    @Inject
-    lateinit var itemDao: ItemDao
+@Inject constructor(private val categoryDao: CategoryDao,
+                    private val itemDao: ItemDao) : ViewModel() {
 
     private val categoryId = MutableLiveData<Long>()
 
-    var category: LiveData<Category>
-    var items: LiveData<List<Item>>
-
-    init {
-        Injector.get().inject(this)
-
-        category = Transformations.switchMap(categoryId) {
-            categoryDao.findCategoryById(it)
-        }
-
-        items = Transformations.switchMap(categoryId) {
-            itemDao.findItemsByCategoryId(it)
-        }
+    val category: LiveData<Category> = Transformations.switchMap(categoryId) {
+        categoryDao.findCategoryById(it)
+    }
+    val items: LiveData<List<Item>> = Transformations.switchMap(categoryId) {
+        itemDao.findItemsByCategoryId(it)
     }
 
     fun setCategoryId(categoryId: Long) {

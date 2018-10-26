@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
@@ -19,9 +20,9 @@ import com.jerry.demo.organizer.util.tintAllIcons
 import com.nguyenhoanglam.imagepicker.model.Config
 import com.nguyenhoanglam.imagepicker.model.Image
 import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePickerActivity
 import kotlinx.android.synthetic.main.activity_edit_item.*
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
@@ -33,6 +34,8 @@ class EditItemActivity : BaseActivity() {
 
     @Inject
     lateinit var itemDao: ItemDao
+    @Inject
+    lateinit var viewProviderFactory: ViewModelProvider.Factory
 
     // keep a reference to this menu option so we can enable or disable it later
     private var deleteMenu: MenuItem? = null
@@ -55,7 +58,7 @@ class EditItemActivity : BaseActivity() {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        viewModel = ViewModelProviders.of(this).get(EditItemViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewProviderFactory).get(EditItemViewModel::class.java)
 
         // loads the item if it exists
         viewModel.item.observe(this, Observer { data ->
@@ -147,13 +150,11 @@ class EditItemActivity : BaseActivity() {
     }
 
     // checks if the user has changed something
-    private fun isDifferent(): Boolean {
-        when (item) {
-            null -> return titleEditText.text.isNotEmpty() ||
-                    descriptionTextView.text.isNotEmpty() || viewModel.imagePath?.isNotEmpty() ?: false
-            else -> return item?.name != titleEditText.text.toString() ||
-                    item?.description != descriptionTextView.text.toString() || item?.imagePath != viewModel.imagePath
-        }
+    private fun isDifferent() = when (item) {
+        null -> titleEditText.text.isNotEmpty() ||
+                descriptionTextView.text.isNotEmpty() || viewModel.imagePath?.isNotEmpty() ?: false
+        else -> item?.name != titleEditText.text.toString() ||
+                item?.description != descriptionTextView.text.toString() || item?.imagePath != viewModel.imagePath
     }
 
     // performs form validation to make sure required fields have been filled out
@@ -163,7 +164,7 @@ class EditItemActivity : BaseActivity() {
                 titleEditText.error = getString(R.string.title_required)
                 return false
             }
-            else -> titleEditText.setError(null)
+            else -> titleEditText.error = null
         }
 
         when (descriptionTextView.text.isEmpty()) {
@@ -182,7 +183,7 @@ class EditItemActivity : BaseActivity() {
         if (!validate()) {
             return
         }
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             itemDao.insert(Item().apply {
                 name = titleEditText.text.toString()
                 description = descriptionTextView.text.toString()
@@ -213,7 +214,7 @@ class EditItemActivity : BaseActivity() {
     // deletes the item in a separate thread
     private fun deleteItem() {
         item?.let {
-            launch(CommonPool) {
+            GlobalScope.launch(Dispatchers.Default) {
                 itemDao.deleteItem(it.id)
                 finish()
             }
@@ -232,9 +233,7 @@ class EditItemActivity : BaseActivity() {
                 .start()
     }
 
-    companion object : ActivityCompanion<IntentOptions>(IntentOptions, EditItemActivity::class) {
-        val CAMERA_DIRECTORY = "Camera"
-    }
+    companion object : ActivityCompanion<IntentOptions>(IntentOptions, EditItemActivity::class)
 
     object IntentOptions {
         var Intent.itemId by IntentExtra.Long()

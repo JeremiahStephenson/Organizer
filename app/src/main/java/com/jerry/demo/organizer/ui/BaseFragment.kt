@@ -7,13 +7,24 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.util.tintAllIcons
+import javax.inject.Inject
 
 abstract class BaseFragment : Fragment() {
+    @Inject
+    lateinit var viewProviderFactory: ViewModelProvider.Factory
+
+    init {
+        Injector.get().inject(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(getLayoutResourceId(), container, false)
-        return view
+        return inflater.inflate(getLayoutResourceId(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +55,9 @@ abstract class BaseFragment : Fragment() {
     @LayoutRes
     protected abstract fun getLayoutResourceId(): Int
 
-    protected fun onPostCreateView() {
+    protected fun onPostCreateView() { }
+
+    inline fun <reified VM : ViewModel> viewModelProvider() = lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProviders.of(this, viewProviderFactory).get(VM::class.java)
     }
 }

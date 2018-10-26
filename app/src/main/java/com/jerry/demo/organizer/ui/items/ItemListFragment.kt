@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.jerry.demo.organizer.R
@@ -18,7 +17,8 @@ import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.widget.SpaceItemDecorator
 import kotlinx.android.synthetic.main.fragment_items.*
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.bundle.BundleExtra
 import me.eugeniomarletti.extras.bundle.base.Long
@@ -32,7 +32,7 @@ class ItemListFragment : BaseFragment() {
     lateinit var categoryDao: CategoryDao
 
     private var category: Category? = null
-    private lateinit var viewModel: ItemListViewModel
+    private val viewModel by viewModelProvider<ItemListViewModel>()
 
     private val itemsAdapter by lazy {
         ItemsAdapter().apply {
@@ -56,7 +56,6 @@ class ItemListFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        viewModel = ViewModelProviders.of(this).get(ItemListViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -126,7 +125,7 @@ class ItemListFragment : BaseFragment() {
     }
 
     private fun saveItemRating(itemId: Long, rating: Int) {
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             itemDao.setItemRating(itemId, rating)
         }
     }
@@ -134,9 +133,9 @@ class ItemListFragment : BaseFragment() {
     // confirm that the user wants to delete the category
     private fun confirmDeleteCategory() {
         activity?.let {
-            category?.let {
+            category?.let { cat ->
                 MaterialDialog.Builder(activity!!)
-                        .title(getString(R.string.are_sure_delete, it.name))
+                        .title(getString(R.string.are_sure_delete, cat.name))
                         .negativeText(R.string.cancel)
                         .positiveText(R.string.yes)
                         .onPositive { _, _ -> deleteCategory() }
@@ -147,7 +146,7 @@ class ItemListFragment : BaseFragment() {
 
     // delete the category in a separate thread
     private fun deleteCategory() {
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             category?.let {
                 categoryDao.deleteCategory(it.id)
                 activity?.finish()

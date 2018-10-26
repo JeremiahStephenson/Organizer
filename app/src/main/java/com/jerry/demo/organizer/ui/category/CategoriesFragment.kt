@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -16,7 +15,8 @@ import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.GeneralActivity
 import com.jerry.demo.organizer.ui.items.ItemListFragment
 import kotlinx.android.synthetic.main.fragment_items.*
-import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +26,7 @@ class CategoriesFragment : BaseFragment() {
     @Inject
     lateinit var categoryDao: CategoryDao
 
-    private lateinit var viewModel: CategoriesViewModel
+    private val viewModel by viewModelProvider<CategoriesViewModel>()
 
     private val categoriesAdapter by lazy {
         CategoriesAdapter().apply {
@@ -42,11 +42,6 @@ class CategoriesFragment : BaseFragment() {
 
     override fun getLayoutResourceId(): Int {
         return R.layout.fragment_items
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CategoriesViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -84,7 +79,7 @@ class CategoriesFragment : BaseFragment() {
 
     private fun saveCategory(category: String) {
         // save the category in a separate thread
-        val job = launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             categoryDao.insert(Category().apply {
                 name = category
                 timestamp = Calendar.getInstance().timeInMillis
@@ -101,13 +96,13 @@ class CategoriesFragment : BaseFragment() {
     private fun goToItemList(categoryId: Long) {
         // show the item list for the category
         context?.let {
-            GeneralActivity.start(it) {
-                val bundle: Bundle = Bundle()
+            GeneralActivity.start(it) { intent ->
+                val bundle = Bundle()
                 with(ItemListFragment.BundleOptions) {
                     bundle.categoryId = categoryId
                 }
-                it.fragmentBundle = bundle
-                it.fragmentClass = ItemListFragment::class.java
+                intent.fragmentBundle = bundle
+                intent.fragmentClass = ItemListFragment::class.java
             }
         }
     }

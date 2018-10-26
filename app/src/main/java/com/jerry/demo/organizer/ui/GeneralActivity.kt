@@ -17,19 +17,16 @@ import me.eugeniomarletti.extras.intent.base.Serializable
  */
 open class GeneralActivity : BaseActivity() {
     // get the fragment class from the intent extras
-    open protected fun getFragmentClass(): Class<*> {
+    protected open fun getFragmentClass(): Class<*> {
         intent.options {
             return it.fragmentClass!!
         }
     }
 
     // get the fragment bundle arguments from the intent extras
-    open protected fun getFragmentArgs(): Bundle? {
+    protected open fun getFragmentArgs(): Bundle? {
         intent.options {
-            it.fragmentBundle?.let {
-                return it
-            }
-            return null
+            return it.fragmentBundle
         }
     }
 
@@ -57,16 +54,15 @@ open class GeneralActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    open protected fun showBackButton(): Boolean {
-        return true
-    }
+    protected open fun showBackButton() = true
 
     // displays fragment and passes in bundle arguments
     private fun displayFragment(activity: FragmentActivity, fragmentClass: Class<*>, args: Bundle? = null) {
-        val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_pos1,
-                Fragment.instantiate(activity, fragmentClass.name, args), fragmentClass.name)
-        transaction.commit()
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_pos1,
+                    Fragment.instantiate(activity, fragmentClass.name, args), fragmentClass.name)
+            commit()
+        }
     }
 
     companion object : ActivityCompanion<IntentOptions>(IntentOptions, GeneralActivity::class)

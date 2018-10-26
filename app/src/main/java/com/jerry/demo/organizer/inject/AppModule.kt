@@ -15,9 +15,7 @@ class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    internal fun provideApplication(): Application {
-        return application
-    }
+    internal fun provideApplication() = application
 
     @Provides
     fun provideSharedPreferences(application: Application): SharedPreferences {
