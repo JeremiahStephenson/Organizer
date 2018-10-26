@@ -2,11 +2,9 @@ package com.jerry.demo.organizer.util
 
 import android.util.Log
 import androidx.lifecycle.*
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class LifecycleWatcher @Inject constructor() : LifecycleObserver {
+// Injectable
+class LifecycleWatcher : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate(source: LifecycleOwner) {

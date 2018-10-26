@@ -10,7 +10,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
-import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.GeneralActivity
 import com.jerry.demo.organizer.ui.items.ItemListFragment
@@ -18,15 +17,14 @@ import kotlinx.android.synthetic.main.fragment_items.*
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-import javax.inject.Inject
 
 class CategoriesFragment : BaseFragment() {
 
-    @Inject
-    lateinit var categoryDao: CategoryDao
-
-    private val viewModel by viewModelProvider<CategoriesViewModel>()
+    private val categoryDao by inject<CategoryDao>()
+    private val viewModel by viewModel<CategoriesViewModel>()
 
     private val categoriesAdapter by lazy {
         CategoriesAdapter().apply {
@@ -34,10 +32,6 @@ class CategoriesFragment : BaseFragment() {
                 goToItemList(category.id)
             }
         }
-    }
-
-    init {
-        Injector.get().inject(this)
     }
 
     override fun getLayoutResourceId(): Int {

@@ -3,12 +3,11 @@ package com.jerry.demo.organizer.ui.items
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
-import com.jerry.demo.organizer.database.item.ItemDiff
+import com.jerry.demo.organizer.util.ItemDiff
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {

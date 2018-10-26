@@ -1,26 +1,14 @@
 package com.jerry.demo.organizer.ui
 
-
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.util.tintAllIcons
-import javax.inject.Inject
 
 abstract class BaseFragment : Fragment() {
-    @Inject
-    lateinit var viewProviderFactory: ViewModelProvider.Factory
-
-    init {
-        Injector.get().inject(this)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -56,8 +44,4 @@ abstract class BaseFragment : Fragment() {
     protected abstract fun getLayoutResourceId(): Int
 
     protected fun onPostCreateView() { }
-
-    inline fun <reified VM : ViewModel> viewModelProvider() = lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProviders.of(this, viewProviderFactory).get(VM::class.java)
-    }
 }

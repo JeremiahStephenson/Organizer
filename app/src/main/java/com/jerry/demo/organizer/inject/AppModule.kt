@@ -5,25 +5,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.view.inputmethod.InputMethodManager
-import com.jerry.demo.organizer.database.DatabaseModule
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.jerry.demo.organizer.util.LifecycleWatcher
+import org.koin.dsl.module.module
 
-@Module(includes = arrayOf(DatabaseModule::class))
-class AppModule(private val application: Application) {
+val appModule = module {
 
-    @Provides
-    @Singleton
-    internal fun provideApplication() = application
+    // single instance of shared preferences
+    single<SharedPreferences> { PreferenceManager.getDefaultSharedPreferences(get()) }
 
-    @Provides
-    fun provideSharedPreferences(application: Application): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(application)
-    }
+    single { get<Application>().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
 
-    @Provides
-    fun provideInputMethodManager(application: Application): InputMethodManager {
-        return application.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    }
+    single { LifecycleWatcher() }
 }
+

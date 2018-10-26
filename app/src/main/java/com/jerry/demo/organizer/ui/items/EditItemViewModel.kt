@@ -6,10 +6,8 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
-import javax.inject.Inject
 
-class EditItemViewModel
-@Inject constructor(private val itemDao: ItemDao) : ViewModel() {
+class EditItemViewModel(private val itemDao: ItemDao) : ViewModel() {
 
     private val itemId = MutableLiveData<Long>()
 

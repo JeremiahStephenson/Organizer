@@ -3,7 +3,7 @@ package com.jerry.demo.organizer.database.item
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.jerry.demo.organizer.database.Primary
+import com.jerry.demo.organizer.database.PrimaryId
 import com.jerry.demo.organizer.database.category.Category
 
 @Entity(tableName = "item",
@@ -15,4 +15,4 @@ data class Item(@PrimaryKey(autoGenerate = true) override var id: Long = 0L,
                 var description: String = "",
                 var rating: Int = 0,
                 var imagePath: String = "",
-                var timestamp: Long = 0L) : Primary
+                var timestamp: Long = 0L) : PrimaryId

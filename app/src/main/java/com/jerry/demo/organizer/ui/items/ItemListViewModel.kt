@@ -8,11 +8,9 @@ import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
-import javax.inject.Inject
 
-class ItemListViewModel
-@Inject constructor(private val categoryDao: CategoryDao,
-                    private val itemDao: ItemDao) : ViewModel() {
+class ItemListViewModel(private val categoryDao: CategoryDao,
+                        private val itemDao: ItemDao) : ViewModel() {
 
     private val categoryId = MutableLiveData<Long>()
 

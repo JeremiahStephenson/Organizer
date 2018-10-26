@@ -7,14 +7,11 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
-import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.BaseActivity
 import com.jerry.demo.organizer.util.tintAllIcons
 import com.nguyenhoanglam.imagepicker.model.Config
@@ -27,25 +24,18 @@ import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Long
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
-import javax.inject.Inject
 
 class EditItemActivity : BaseActivity() {
 
-    @Inject
-    lateinit var itemDao: ItemDao
-    @Inject
-    lateinit var viewProviderFactory: ViewModelProvider.Factory
+    private val itemDao by inject<ItemDao>()
+    private val viewModel by viewModel<EditItemViewModel>()
 
     // keep a reference to this menu option so we can enable or disable it later
     private var deleteMenu: MenuItem? = null
     private var item: Item? = null
-
-    private lateinit var viewModel: EditItemViewModel
-
-    init {
-        Injector.get().inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +47,6 @@ class EditItemActivity : BaseActivity() {
             it.setHomeButtonEnabled(true)
             it.setDisplayHomeAsUpEnabled(true)
         }
-
-        viewModel = ViewModelProviders.of(this, viewProviderFactory).get(EditItemViewModel::class.java)
 
         // loads the item if it exists
         viewModel.item.observe(this, Observer { data ->

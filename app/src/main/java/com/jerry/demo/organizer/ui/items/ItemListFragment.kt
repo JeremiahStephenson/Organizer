@@ -13,7 +13,6 @@ import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.category.Category
 import com.jerry.demo.organizer.database.category.CategoryDao
 import com.jerry.demo.organizer.database.item.ItemDao
-import com.jerry.demo.organizer.inject.Injector
 import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.widget.SpaceItemDecorator
 import kotlinx.android.synthetic.main.fragment_items.*
@@ -22,17 +21,16 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import me.eugeniomarletti.extras.bundle.BundleExtra
 import me.eugeniomarletti.extras.bundle.base.Long
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ItemListFragment : BaseFragment() {
 
-    @Inject
-    lateinit var itemDao: ItemDao
-    @Inject
-    lateinit var categoryDao: CategoryDao
+    private val itemDao by inject<ItemDao>()
+    private val categoryDao by inject<CategoryDao>()
+    private val viewModel by viewModel<ItemListViewModel>()
 
     private var category: Category? = null
-    private val viewModel by viewModelProvider<ItemListViewModel>()
 
     private val itemsAdapter by lazy {
         ItemsAdapter().apply {
@@ -43,10 +41,6 @@ class ItemListFragment : BaseFragment() {
                 saveItemRating(item.id, rating)
             }
         }
-    }
-
-    init {
-        Injector.get().inject(this)
     }
 
     override fun getLayoutResourceId(): Int {

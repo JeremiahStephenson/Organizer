@@ -1,5 +1,5 @@
 package com.jerry.demo.organizer.database
 
-interface Primary {
+interface PrimaryId {
     var id: Long
 }
