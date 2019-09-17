@@ -8,11 +8,8 @@ import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
 
 @Database(
-        entities = arrayOf(
-                Category::class,
-                Item::class
-        ),
-        version = 1)
+        entities = [Category::class, Item::class],
+        version = 2, exportSchema = false)
 abstract class MainDatabase : RoomDatabase() {
 
     abstract fun categoryDao(): CategoryDao

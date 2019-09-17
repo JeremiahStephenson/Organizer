@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentFactory
 import com.jerry.demo.organizer.R
 import kotlinx.android.synthetic.main.toolbar_actionbar.*
 import me.eugeniomarletti.extras.ActivityCompanion
@@ -47,8 +48,8 @@ open class GeneralActivity : BaseActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
             finish()
         }
         return super.onOptionsItemSelected(item)
@@ -59,8 +60,9 @@ open class GeneralActivity : BaseActivity() {
     // displays fragment and passes in bundle arguments
     private fun displayFragment(activity: FragmentActivity, fragmentClass: Class<*>, args: Bundle? = null) {
         activity.supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_pos1,
-                    Fragment.instantiate(activity, fragmentClass.name, args), fragmentClass.name)
+            val fragment = activity.supportFragmentManager.fragmentFactory.instantiate(fragmentClass::class.java.classLoader!!, fragmentClass.name)
+            fragment.arguments = args
+            replace(R.id.fragment_pos1, fragment, fragmentClass.name)
             commit()
         }
     }

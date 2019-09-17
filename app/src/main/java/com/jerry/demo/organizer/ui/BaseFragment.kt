@@ -32,10 +32,10 @@ abstract class BaseFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = title
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // tint all toolbar icons white
         activity?.let {
-            menu?.tintAllIcons(it, android.R.color.white)
+            menu.tintAllIcons(it, android.R.color.white)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }

@@ -7,8 +7,8 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.Observer
+import coil.api.load
 import com.afollestad.materialdialogs.MaterialDialog
-import com.bumptech.glide.Glide
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
@@ -18,14 +18,15 @@ import com.nguyenhoanglam.imagepicker.model.Config
 import com.nguyenhoanglam.imagepicker.model.Image
 import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.activity_edit_item.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Long
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import java.util.*
 
 class EditItemActivity : BaseActivity() {
@@ -57,7 +58,8 @@ class EditItemActivity : BaseActivity() {
         })
 
         viewModel.imagePath?.let {
-            Glide.with(this).load(viewModel.imagePath).into(itemImageView)
+            itemImageView.load(File(viewModel.imagePath))
+            //Glide.with(this).load(viewModel.imagePath).into(itemImageView)
         }
 
         // set things up in the view if we're editing or creating
@@ -80,14 +82,12 @@ class EditItemActivity : BaseActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item?.let {
-            when (it.itemId) {
-                R.id.menu_item_save -> saveItem()
-                R.id.menu_item_delete -> confirmDeleteItem()
-                R.id.menu_item_photo -> selectPhoto()
-                android.R.id.home -> checkIfDifferent()
-            }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_save -> saveItem()
+            R.id.menu_item_delete -> confirmDeleteItem()
+            R.id.menu_item_photo -> selectPhoto()
+            android.R.id.home -> checkIfDifferent()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -103,9 +103,11 @@ class EditItemActivity : BaseActivity() {
             // show the photo and save the path so we can save it in the db later
             if (images?.isNotEmpty() == true && images.first() is Image) {
                 viewModel.imagePath = (images.first() as Image).path
-                Glide.with(this).load(viewModel.imagePath).into(itemImageView)
+                itemImageView.load(File(viewModel.imagePath))
+                //Glide.with(this).load(viewModel.imagePath).into(itemImageView)
             }
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     // check if the user changed data so we can ask them if they want to save it
@@ -132,7 +134,8 @@ class EditItemActivity : BaseActivity() {
             !viewModel.imagePath.isNullOrEmpty() -> item.imagePath = viewModel.imagePath ?: ""
             else -> viewModel.imagePath = item.imagePath
         }
-        Glide.with(this).load(item.imagePath).into(itemImageView)
+        itemImageView.load(File(item.imagePath))
+        //Glide.with(this).load(item.imagePath).into(itemImageView)
         titleInputLayout.isHintAnimationEnabled = true
         descriptionInputLayout.isHintAnimationEnabled = true
     }

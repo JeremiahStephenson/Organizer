@@ -16,9 +16,9 @@ import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.widget.SpaceItemDecorator
 import kotlinx.android.synthetic.main.fragment_items.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.eugeniomarletti.extras.bundle.BundleExtra
 import me.eugeniomarletti.extras.bundle.base.Long
 import org.koin.android.ext.android.inject
@@ -87,13 +87,13 @@ class ItemListFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_items, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_items, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.menu_item_delete) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_item_delete) {
             confirmDeleteCategory()
         }
         return super.onOptionsItemSelected(item)

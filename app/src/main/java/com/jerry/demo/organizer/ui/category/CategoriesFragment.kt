@@ -14,9 +14,9 @@ import com.jerry.demo.organizer.ui.BaseFragment
 import com.jerry.demo.organizer.ui.GeneralActivity
 import com.jerry.demo.organizer.ui.items.ItemListFragment
 import kotlinx.android.synthetic.main.fragment_items.*
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*

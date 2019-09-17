@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.api.load
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.util.ItemDiff
 import kotlinx.android.synthetic.main.list_item.view.*
+import java.io.File
 
 class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
     private val differ = AsyncListDiffer(this, ItemDiff<Item>())
@@ -30,7 +31,8 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
             holder.itemTextView.text = item.name
             holder.descriptionTextView.text = item.description
             holder.ratingBar.rating = item.rating.toFloat()
-            Glide.with(holder.photoImageView.context).load(item.imagePath).into(holder.photoImageView)
+            holder.photoImageView.load(File(item.imagePath))
+            //Glide.with(holder.photoImageView.context).load(item.imagePath).into(holder.photoImageView)
         }
     }
 
