@@ -1,13 +1,19 @@
 package com.jerry.demo.organizer.ui.items
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
+import coil.Coil
 import coil.api.load
+import coil.decode.DataSource
+import coil.request.LoadRequest
+import coil.request.Request
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.util.ItemDiff
+import kotlinx.android.synthetic.main.activity_edit_item.*
 import kotlinx.android.synthetic.main.list_item.view.*
 import java.io.File
 
@@ -31,7 +37,9 @@ class ItemsAdapter : RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {
             holder.itemTextView.text = item.name
             holder.descriptionTextView.text = item.description
             holder.ratingBar.rating = item.rating.toFloat()
-            holder.photoImageView.load(File(item.imagePath))
+            holder.photoImageView.load(File(item.imagePath)) {
+                crossfade(true)
+            }
             //Glide.with(holder.photoImageView.context).load(item.imagePath).into(holder.photoImageView)
         }
     }

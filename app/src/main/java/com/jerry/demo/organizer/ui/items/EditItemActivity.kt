@@ -2,17 +2,29 @@ package com.jerry.demo.organizer.ui.items
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Observer
+import coil.Coil
+import coil.ImageLoader
 import coil.api.load
+import coil.request.LoadRequest
+import coil.request.LoadRequestBuilder
+import coil.target.ImageViewTarget
+import coil.target.PoolableViewTarget
+import coil.util.CoilUtils
 import com.afollestad.materialdialogs.MaterialDialog
 import com.jerry.demo.organizer.R
 import com.jerry.demo.organizer.database.item.Item
 import com.jerry.demo.organizer.database.item.ItemDao
 import com.jerry.demo.organizer.ui.BaseActivity
+import com.jerry.demo.organizer.util.customTarget
 import com.jerry.demo.organizer.util.tintAllIcons
 import com.nguyenhoanglam.imagepicker.model.Config
 import com.nguyenhoanglam.imagepicker.model.Image
@@ -24,9 +36,13 @@ import kotlinx.coroutines.launch
 import me.eugeniomarletti.extras.ActivityCompanion
 import me.eugeniomarletti.extras.intent.IntentExtra
 import me.eugeniomarletti.extras.intent.base.Long
+import okhttp3.Call
+import okhttp3.EventListener
+import okhttp3.OkHttpClient
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
+import java.io.IOException
 import java.util.*
 
 class EditItemActivity : BaseActivity() {
@@ -134,7 +150,11 @@ class EditItemActivity : BaseActivity() {
             !viewModel.imagePath.isNullOrEmpty() -> item.imagePath = viewModel.imagePath ?: ""
             else -> viewModel.imagePath = item.imagePath
         }
-        itemImageView.load(File(item.imagePath))
+
+        itemImageView.load(File(item.imagePath)) {
+            crossfade(true)
+        }
+
         //Glide.with(this).load(item.imagePath).into(itemImageView)
         titleInputLayout.isHintAnimationEnabled = true
         descriptionInputLayout.isHintAnimationEnabled = true
